@@ -1,6 +1,6 @@
 # 介绍
 桌面整理美化工具，分为功能栏和任务栏上下两部分<br>
-**任务栏UI：** UI灵感来源于MacOS，文件夹下的快捷方式都将在此展示，从任务栏中打开软件后，会记录使用次数并排序，使用次数最多的3个软件将额外显示在最右侧<br>
+**任务栏：** UI灵感来源于MacOS，文件夹下的快捷方式都将在此展示，从任务栏中打开软件后，会记录使用次数并排序，使用次数最多的3个软件将额外显示在最右侧<br>
 **功能栏：** 包括搜索文件、文件分类（ppt、word、Excel、所有）、菜单（显示隐藏文件搜索功能、置顶、设置、关闭）、昼夜模式切换、时间、ToDo（待开发）
 # UI界面
 ![image](https://github.com/MoYu030/DesktopFileOrganizer-WPF/blob/main/DesktopFileOrganizer/Resources/123123.png)
