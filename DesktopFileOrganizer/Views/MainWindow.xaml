@@ -1,0 +1,168 @@
+﻿<Window xmlns:CustomControl="clr-namespace:DesktopFileOrganizer.Views.CustomControl"  x:Class="DesktopFileOrganizer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:be="clr-namespace:DesktopFileOrganizer.Views.Behaviors"
+        xmlns:local="clr-namespace:DesktopFileOrganizer"
+        WindowStyle="None"
+        Topmost="{Binding IsTopmost}"
+        WindowState="Maximized"
+        AllowsTransparency="True"
+        Background="Transparent"
+        mc:Ignorable="d"
+        DataContext="{Binding Source={StaticResource Locator},Path=Main}"
+        Title="MainWindow" Height="1080" Width="1920">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="8"/>
+            <RowDefinition Height="110"/>
+            <!--Dock栏与底部的距离-->
+            <RowDefinition Height="60" />
+        </Grid.RowDefinitions>
+        <!--Search Result-->
+        <Popup x:Name="popup" StaysOpen="False" PopupAnimation="Slide" IsOpen="{Binding PopIsOpen}" PlacementTarget="{Binding ElementName=searchBar}" AllowsTransparency="True" >
+            <Border Width="258" Height="335" Background="Transparent" CornerRadius="16"  >
+                <ListBox  x:Name="result_ListBox" Style="{DynamicResource ResultListStyle}"  ItemsSource="{Binding SearchResultList}" VerticalAlignment="Bottom"  ItemContainerStyle="{DynamicResource ItemContainerStyle2}" >
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding OpenResultDataCommand}" CommandParameter="{Binding ElementName=result_ListBox,Path=SelectedIndex}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate >
+                            <Border Width="240" Height="44" Margin="0,3,0,3" Background="#70000000" CornerRadius="12" >
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Width="14" Height="14" Background="#0A8BFF" CornerRadius="7" Margin="12,0"/>
+                                        <TextBlock Text="{Binding FileName}" Foreground="#F1F2F3" Width="170" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" FontSize="14" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding PathInfo}" x:Name="path" Visibility="Collapsed"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
+        </Popup>
+        <StackPanel  Grid.Row="2" HorizontalAlignment="Center">
+            <Grid >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <!--功能栏-->
+                    <RowDefinition Height="4"/>
+                    <!--间隔-->
+                    <RowDefinition Height="66"/>
+                    <!--软件栏-->
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" Visibility="{Binding SearchFileVis}" Width="auto" x:Name="searchBar">
+                    <Border  Width="240" Height="36" Background="{Binding BgColor}" Style="{DynamicResource DockBoderStyle}" HorizontalAlignment="Left" Opacity="0.7" >
+                        <StackPanel Orientation="Horizontal" Margin="8,0,8,0">
+                            <TextBlock Foreground="{Binding FontColor}" FontFamily="/Resources/Fonts/#iconfont" Text="&#xe82e;" FontSize="24" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" />
+                            <TextBox x:Name="searchbox" Style="{DynamicResource TextBoxStyle}" Text="请输入想要查询的文件名......" Background="{Binding BgColor}" Foreground="{Binding FontColor}"  Width="184" GotFocus="TextBox_GotFocus" LostFocus="searchbox_LostFocus">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="TextChanged">
+                                        <i:InvokeCommandAction Command="{Binding TextChangedCommand}" CommandParameter="{Binding ElementName=searchbox,Path=Text}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>
+                        </StackPanel>
+                    </Border>
+                    <!--File Type-->
+                    <StackPanel Orientation="Horizontal" Margin="2,0,0,0" >
+                        <!--Excel-->
+                        <local:ImgButton Source="../Resources/Icons/Excel-Color.png" BackgroundColor="{Binding BgColor}" Command="{Binding SearchExcelFileCommand}"/>
+                        <!--Power Point-->
+                        <local:ImgButton Source="../Resources/Icons/Powerpoint-Color.png" BackgroundColor="{Binding BgColor}" Command="{Binding SearchPPtFileCommand}"/>
+                        <!--Word-->
+                        <local:ImgButton Source="../Resources/Icons/Word-Color.png" BackgroundColor="{Binding BgColor}" Command="{Binding SearchWordFileCommand}"/>
+                        <!--File_Folder-->
+                        <local:ImgButton Source="../Resources/Icons/File_Folder.png" BackgroundColor="{Binding BgColor}" Command="{Binding SearchAllFileCommand}"/>
+                    </StackPanel>
+                </StackPanel>
+                <Border Background="{Binding BgColor}" Grid.Column="1" Margin="8,0,8,0" CornerRadius="18" Opacity="0.7" Height="36" Visibility="Collapsed"/>
+                <TextBlock Text="温馨提醒" Foreground="{Binding FontColor}" VerticalAlignment="Center" Margin="32,0" FontWeight="Bold" FontSize="16" Grid.Column="1" Visibility="Collapsed"/>
+                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" FlowDirection="RightToLeft" Grid.Column="2" Width="auto">
+                    <!--时间-->
+                    <Border  Width="160" Style="{DynamicResource DockBoderStyle}" HorizontalAlignment="Right" Background="{Binding BgColor}" Height="36">
+                        <TextBlock x:Name="time_Text" Text="03月11日 21:00" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" Foreground="{Binding FontColor}">
+                            <i:Interaction.Behaviors>
+                                <be:UpdateTimeBehavior NowTime="{Binding ElementName=time_Text,Path=Text}"/>
+                            </i:Interaction.Behaviors>
+                        </TextBlock>
+                    </Border>
+                    <!--暗黑模式切换-->
+                    <Button Width="40" Height="40" BorderThickness="0" Background="Transparent" Margin="2,0,0,0" >
+                        <i:Interaction.Behaviors>
+                            <be:BackgroundChangedBehavior ForeColor="{Binding FontColor,Mode=TwoWay}" BgColor="{Binding BgColor,Mode=TwoWay}" ImgSource="{Binding BtnImage,Mode=TwoWay}"/>
+                        </i:Interaction.Behaviors>
+                        <Border Style="{DynamicResource FileTypeStyle}" Background="{Binding BgColor}">
+                            <Image Source="{Binding BtnImage}"  Width="20" Height="20"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </Button>
+                        <!--置顶-->
+                    <Border Width="36" Height="36" Background="{Binding BgColor}" Opacity="0.7" CornerRadius="18" Margin="4,0,0,0" Visibility="{Binding TopmostVis}">
+                        <TextBlock Text="&#xe635;" FontFamily="/Resources/Fonts/#iconfont" Foreground="{Binding FontColor}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="18"/>
+                    </Border>
+                    <!--菜单-->
+                    <Button Width="40" Height="40" BorderThickness="0" Background="Transparent" Margin="4,0,0,0">
+                        <i:Interaction.Behaviors>
+                            <be:VisibilityChangedBehavior MyVisibility="{Binding MenuVis,Mode=TwoWay}"/>
+                        </i:Interaction.Behaviors>
+                        <Border Style="{DynamicResource FileTypeStyle}" Background="{Binding BgColor}">
+                            <TextBlock Text="&#xeaf1;" Foreground="{Binding FontColor}" FontFamily="/Resources/Fonts/#iconfont" FontSize="20" FontWeight="Bold"  Width="20" Height="20"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </Button>
+                    <StackPanel Orientation="Horizontal" Visibility="{Binding MenuVis}">
+                        <Button  Style="{StaticResource MenuItemStyle}" Content="&#xe679;" Click="Button_Click"/>
+                        <Button  Style="{StaticResource MenuItemStyle}" Content="&#xe600;" />
+                        <Button  Style="{StaticResource MenuItemStyle}" Content="&#xe635;">
+                            <i:Interaction.Behaviors>
+                                <be:TopmostBtnBehavior IsTopmost="{Binding IsTopmost,Mode=TwoWay}" BorderVisibility="{Binding TopmostVis,Mode=TwoWay}"/>
+                            </i:Interaction.Behaviors>
+                        </Button>
+                        <Button  Style="{StaticResource MenuItemStyle}" Content="&#xe64b;" >
+                            <i:Interaction.Behaviors>
+                                <be:VisibilityChangedBehavior MyVisibility="{Binding SearchFileVis,Mode=TwoWay}"/>
+                            </i:Interaction.Behaviors>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+                
+                <Border  Width="{Binding DockWidth}" Height="66" Style="{DynamicResource DockBoderStyle}" Grid.Row="2" CornerRadius="18" Grid.ColumnSpan="3" Background="{Binding BgColor}" />
+                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="3">
+                    <ListBox x:Name="lnkData_Listbox" ItemsSource="{Binding LnkDataList}" Style="{DynamicResource DockListStyle}"  ItemContainerStyle="{DynamicResource ItemContainerStyle1}"  SelectionMode="Extended">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding OpenLnkDataCommand}" CommandParameter="{Binding ElementName=lnkData_Listbox,Path=SelectedIndex}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Image  Source="{Binding IconSource}" Stretch="Fill" Width="44" Height="44"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <Border Height="26" Margin="3,20" Width="4" Background="{Binding FontColor}" CornerRadius="2" Visibility="{Binding SplitDockVis}"/>
+                    <ListBox x:Name="usualData_ListBox" ItemsSource="{Binding UsualDataList}" Style="{DynamicResource DockListStyle}" ItemContainerStyle="{DynamicResource ItemContainerStyle1}" >
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding OpenLnkDataCommand}" CommandParameter="{Binding ElementName=usualData_ListBox,Path=SelectedIndex}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Image  Source="{Binding IconSource}" Stretch="Fill" Width="44" Height="44"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</Window>
